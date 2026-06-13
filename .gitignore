@@ -1,0 +1,8 @@
+# Local Claude settings (machine-specific)
+.claude/settings.local.json
+
+# Build outputs
+*.stl
+*.png
+*.3mf
+*.gcode

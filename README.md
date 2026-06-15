@@ -54,7 +54,7 @@ Verify lever→lug mapping and that centre is fully open with a multimeter.
 
 Parametric, 3 printed parts. The LCR-ST1 docks face-up (screen through the top window), inserted from the open bottom; the baseplate closes it with 4 corner M2 self-tapping screws.
 
-- **shell** — top panel + walls; holes for pot (Ø22.5 + anti-rotation notch), toggle (Ø6.2), 2 banana jacks (Ø8, 30 mm pitch), USB-C, display window (bezel + lip); captive-button pocket; 2-socket banana-plug parking holder on the +X wall (grips the Ø9×12 plug body + Ø4 pin).
+- **shell** — top panel + walls; holes for pot (Ø22.5 + anti-rotation notch), toggle (Ø6.2), 2 banana jacks (Ø8, 30 mm pitch), USB-C, display window (bezel + lip); captive-button pocket; 2 banana-plug parking sockets embedded in the front (−Y) face, bottom-right (grip the Ø9×12 plug body + Ø4 pin).
 - **baseplate** — fits inside the walls; central LCR support post; 4 recessed M2 clearance holes (Ø1.75 pilot in the shell bosses).
 - **button** — captive plunger pressing the LCR power button.
 

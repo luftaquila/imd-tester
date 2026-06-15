@@ -6,3 +6,6 @@
 *.png
 *.3mf
 *.gcode
+
+# macOS
+.DS_Store

@@ -9,9 +9,9 @@
 //
 //  Layout: LCR-ST1 in the +Y (back) half, screen up through the top window.
 //  Pot + toggle on the top, -Y (front) strip, straddling the X-centre. Banana
-//  jacks on the +Y (back) wall; a 2-socket banana-plug parking holder protrudes
-//  from the +X wall (back/bottom). Flat top (the pot's ~36 mm body is swallowed
-//  by the box height — no step / tower).
+//  jacks on the +Y (back) wall; a 2-socket banana-plug parking holder is
+//  embedded in the -Y (front) face (bottom-right). Flat top (the pot's ~36 mm
+//  body is swallowed by the box height — no step / tower).
 //
 //  Tweezer ARMS removed by the user, so the box length = LCR body + a small -X
 //  wiring lead (measurement wires exit the LCR's -X end). The LCR is raised on
@@ -59,14 +59,14 @@ jack_depth = 20;   // jack housing depth inside the box (measured)
 jack_xc    = 28;   // pair centre = housing X-centre (jacks symmetric L/R)
 jack_z     = 10;   // below the LCR back (Z 18.4); jack body tucks under the LCR
 
-/* [Banana-plug parking sockets — 2x, +X wall BACK/bottom corner; insert from the front (-Y); grips the Ø9x12 rubber body] */
+/* [Banana-plug parking sockets — 2x, EMBEDDED in the -Y (front) face, bottom-right; insert +Y; grips the Ø9x12 rubber body] */
 park_pin_d    = 4.0;    // contact-pin bore Ø
 park_pin_len  = 18;     // contact-pin bore depth (metal pin = 18 mm)
 park_grip_d   = 9.0;    // rubber-body bore Ø (per spec)
 park_grip_len = 12;     // rubber-body grip length (per spec)
 park_wall     = 2;      // material around the bores
-park_axis_x   = 77;     // bore axis, centred in the protruding part of the holder
-park_zs       = [4, 15];// two socket heights (lower one near the base)
+park_xs       = [41, 54];// two socket X positions (side by side / horizontal), toward the right
+park_z        = 7;       // socket height (low / bottom)
 
 /* [LCR power button + captive plunger] */
 pb_w_x = 4.5; pb_w_y = 6;
@@ -241,34 +241,33 @@ module bezel_fence() {   // thin lip around the display window (panel underside)
     }
 }
 
-park_total   = park_grip_len + park_pin_len;             // full socket depth
-park_y_back  = out_y1;                                    // flush with the body back wall
-park_y_front = park_y_back - park_total - park_wall;      // opening face (-Y)
-park_x1      = park_axis_x + park_grip_d / 2 + park_wall; // protruding +X tip
-park_x0      = cav_x1 - 6;                                // -X extent: reaches into the body so its corner fillet is buried (no crease); the cavity cut trims the interior part
-park_H       = park_zs[1] + park_grip_d / 2 + park_wall;  // top height
+park_total  = park_grip_len + park_pin_len;              // full socket depth (30)
+park_blk_x0 = park_xs[0] - park_grip_d / 2 - park_wall;  // holder block -X
+park_blk_x1 = park_xs[1] + park_grip_d / 2 + park_wall;  // holder block +X
+park_blk_y1 = out_y0 + park_total + park_wall;           // holder block back (blind end + wall)
+park_blk_z1 = park_z + park_grip_d / 2 + park_wall;      // holder block top
 
-module park_bores() {    // 2 stepped Y-axis bores opening at -Y: Ø9 rubber grip + Ø4 contact (deeper, +Y)
-    for (z = park_zs) {
-        translate([park_axis_x, park_y_front - 1, z]) rotate([-90, 0, 0])
-            cylinder(h = park_grip_len + 1, d = park_grip_d);                 // rubber body (opening)
-        translate([park_axis_x, park_y_front + park_grip_len, z]) rotate([-90, 0, 0])
+module park_bores() {    // 2 stepped Y-axis bores into the -Y face, side by side: Ø9 rubber grip + Ø4 contact (deeper, +Y)
+    for (x = park_xs) {
+        translate([x, out_y0 - 1, park_z]) rotate([-90, 0, 0])
+            cylinder(h = park_grip_len + 1, d = park_grip_d);                 // rubber body (front opening)
+        translate([x, out_y0 + park_grip_len, park_z]) rotate([-90, 0, 0])
             cylinder(h = park_pin_len, d = park_pin_d);                       // contact pin (deeper)
     }
 }
 
-module park_holder_solid() { // holder outer: rounded box (all edges, like the body), reaching -X into the body so the union is one seamless shell
-    r = edge_r;
-    hull() for (x = [park_x0 + r, park_x1 - r],
-                y = [park_y_front + r, park_y_back - r],
-                z = [out_z0 + r, park_H - r])
-        translate([x, y, z]) sphere(r = r);
+module embedded_holder() { // solid block in the front strip (bottom-right) holding the 2 bores; internal, no external protrusion
+    difference() {
+        translate([park_blk_x0, out_y0, 0])
+            cube([park_blk_x1 - park_blk_x0, park_blk_y1 - out_y0, park_blk_z1]);
+        park_bores();
+    }
 }
 
 module shell() {
     difference() {
-        union() { rounded_outer(); park_holder_solid(); }                    // body + parking holder as ONE rounded shell (no crease)
-        translate([cav_x0, cav_y0, out_z0 - 1])                              // hollow, open bottom (also trims the holder's -X interior reach)
+        rounded_outer();                                                     // outer solid (all edges rounded)
+        translate([cav_x0, cav_y0, out_z0 - 1])                              // hollow, open bottom
             cube([cav_x1 - cav_x0, cav_y1 - cav_y0, roof_z0 - out_z0 + 1]);
         translate([scr_x0, scr_y0, roof_z0 - 1])                             // screen window
             cube([scr_x1 - scr_x0, scr_y1 - scr_y0, top_th + 2]);
@@ -287,7 +286,7 @@ module shell() {
             translate([jack_xc + dx, out_y1 + 1, jack_z])
                 rotate([90, 0, 0]) cylinder(h = wall + 2, d = jack_d);
         usb_cut();                                                           // USB-C (through the +X wall and the stop frame)
-        park_bores();                                                        // 2 banana-plug parking bores (in the holder)
+        park_bores();                                                        // 2 banana-plug parking bores (open the front face)
         // top-panel engraved labels removed (per request)
     }
     grip(grip_xL, -1); grip(grip_xL, +1);   // Y-grips (long sides)
@@ -296,6 +295,7 @@ module shell() {
     xstop_usb_frame();                                   // +X stop: full plate wrapping the USB on all 4 sides
     corner_bosses();                         // bolt bosses, merged into the wall corners
     bezel_fence();                           // display-window lip (LCR seats on it, levels the meter)
+    embedded_holder();                       // 2 parking sockets embedded in the front face (bottom-right)
 }
 
 // ---------- baseplate (with LCR-support post) ----------

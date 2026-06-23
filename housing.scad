@@ -15,7 +15,7 @@
 //
 //  Tweezer ARMS removed by the user, so the box length = LCR body + a small -X
 //  wiring lead (measurement wires exit the LCR's -X end). The LCR is raised on
-//  a baseplate post so its face seats on the bezel fence, 0.4 mm below the top
+//  a baseplate post so its face seats on the bezel fence, 1.0 mm below the top
 //  window; the captive power button is captured in a local panel counterbore.
 //
 //  Device frame: X = LCR length (+X = USB-C end), Y = width, Z = up.
@@ -107,7 +107,7 @@ scr_y0 = 5.5;  scr_y1 = 22.5;
 
 /* [Display bezel fence] thin lip on the panel underside; the LCR face seats on it,
    levelling the meter against its proud (0.5 mm) power button */
-fence_h = 0.4;  // protrusion below the panel underside (LCR sits 0.4 mm below the panel)
+fence_h = 1.0;  // protrusion below the panel underside (LCR sits 1.0 mm below the panel)
 fence_w = 1.0;  // fence wall width around the window
 
 /* [USB-C cutout, right wall] */
@@ -134,7 +134,7 @@ eps     = 0.1;
 // ---------- derived heights ----------
 roof_z0 = pot_depth + pot_clear;   // 38   top-panel underside
 roof_z1 = roof_z0 + top_th;        // 40.5 top
-face_z  = roof_z0 - fence_h;       // LCR face seats on the bezel fence, 0.4 mm below the panel
+face_z  = roof_z0 - fence_h;       // LCR face seats on the bezel fence, 1.0 mm below the panel
 post_h  = face_z - lcr_hi;         // 18.4 LCR rests on the baseplate post at this Z
 
 cb_flange_z0 = face_z + pb_protrude;          // flange bottom = LCR-button contact level (starts at the very bottom)

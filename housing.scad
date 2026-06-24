@@ -73,9 +73,9 @@ pb_w_x = 4.5; pb_w_y = 6;
 pb_cx  = lcr_len - 10 - pb_w_x / 2; // 47.75
 pb_cy  = 5 + pb_w_y / 2;            // 8.0
 pb_protrude = 0.5;
-cb_flange_d = 8.0; cb_flange_h = 0.5;  // big flange (bottom shaved 1.0→0.5): sits inside the panel counterbore, 0.5 mm clear of the LCR button
+cb_flange_d = 8.0; cb_flange_h = 1.0;  // big flange (full length): bottom on the LCR button, top floats 0.5 mm below the deepened counterbore shoulder
 cb_stem_d   = 4.6; cb_hole_d   = 5.0;
-cb_cbore_d  = 8.4; cb_stem_out = 2.5;  // counterbore (0.5 deep) captures the flange; stem protrudes 2.5 mm above the top
+cb_cbore_d  = 8.4; cb_stem_out = 2.5;  // counterbore (1.0 deep = flange 0.5 + cb_play 0.5) captures the flange; stem protrudes 2.5 mm above the top
 
 /* [LCR support post (single, centred, on the baseplate)] */
 post_jack_clear = 1;  // clearance from each Ø11 jack body
@@ -137,8 +137,10 @@ roof_z1 = roof_z0 + top_th;        // 40.5 top
 face_z  = roof_z0 - fence_h;       // LCR face seats on the bezel fence, 1.0 mm below the panel
 post_h  = face_z - lcr_hi;         // 18.4 LCR rests on the baseplate post at this Z
 
-cb_flange_z0 = roof_z0;                       // flange bottom raised to the panel underside (bottom shaved 0.5 → 0.5 mm gap to the LCR button)
-cb_flange_z1 = cb_flange_z0 + cb_flange_h;    // counterbore shoulder (38.5, unchanged)
+cb_flange_z0 = face_z + pb_protrude;          // flange bottom = LCR-button contact level (full-length plunger restored)
+cb_flange_z1 = cb_flange_z0 + cb_flange_h;    // flange top (38.5)
+cb_play      = 0.5;                            // counterbore deepened past the flange top → plunger floats 0.5 mm, no button preload
+cb_cbore_z1  = cb_flange_z1 + cb_play;         // counterbore shoulder (39.0; cbore now 1.0 deep, +0.5)
 cb_stem_z1   = roof_z1 + cb_stem_out;
 
 usb_cy = lcr_wid / 2;       // width-centred
@@ -271,10 +273,10 @@ module shell() {
             cube([cav_x1 - cav_x0, cav_y1 - cav_y0, roof_z0 - out_z0 + 1]);
         translate([scr_x0, scr_y0, roof_z0 - 1])                             // screen window
             cube([scr_x1 - scr_x0, scr_y1 - scr_y0, top_th + 2]);
-        translate([pb_cx, pb_cy, roof_z0 - eps])                             // captive-button counterbore
-            cylinder(h = cb_flange_z1 - roof_z0 + eps, d = cb_cbore_d);
-        translate([pb_cx, pb_cy, cb_flange_z1])                              // small top hole
-            cylinder(h = roof_z1 - cb_flange_z1 + 1, d = cb_hole_d);
+        translate([pb_cx, pb_cy, roof_z0 - eps])                             // captive-button counterbore (deepened: shoulder = cb_cbore_z1)
+            cylinder(h = cb_cbore_z1 - roof_z0 + eps, d = cb_cbore_d);
+        translate([pb_cx, pb_cy, cb_cbore_z1])                              // small top hole
+            cylinder(h = roof_z1 - cb_cbore_z1 + 1, d = cb_hole_d);
         translate([pot_pos[0], pot_pos[1], roof_z0 - 1]) {                   // pot hole + notch
             cylinder(h = top_th + 2, d = pot_hole_d);
             translate([-pot_notch_w / 2, pot_hole_d / 2 - eps, 0])

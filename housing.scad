@@ -73,9 +73,9 @@ pb_w_x = 4.5; pb_w_y = 6;
 pb_cx  = lcr_len - 10 - pb_w_x / 2; // 47.75
 pb_cy  = 5 + pb_w_y / 2;            // 8.0
 pb_protrude = 0.5;
-cb_flange_d = 8.0; cb_flange_h = 1.0;  // big flange: caught in the panel counterbore + presses the LCR button
+cb_flange_d = 8.0; cb_flange_h = 0.5;  // big flange (bottom shaved 1.0→0.5): sits inside the panel counterbore, 0.5 mm clear of the LCR button
 cb_stem_d   = 4.6; cb_hole_d   = 5.0;
-cb_cbore_d  = 8.4; cb_stem_out = 2.5;  // cbore thins panel over button; stem protrudes 2.5 mm above the top (was 1.5)
+cb_cbore_d  = 8.4; cb_stem_out = 2.5;  // counterbore (0.5 deep) captures the flange; stem protrudes 2.5 mm above the top
 
 /* [LCR support post (single, centred, on the baseplate)] */
 post_jack_clear = 1;  // clearance from each Ø11 jack body
@@ -99,7 +99,7 @@ grip_w   = 8;            // Y-grip width along X
 grip_th  = 4;            // -Y grip rib thickness (Y) — strengthened from 2 mm (pot-limited)
 xgrip_w  = 5;            // X-stop width (Y)
 xstop_th = 5;            // X-stop thickness (X, butting the LCR end face)
-xstop_squeeze = 0.8;     // -X stop bites this far past the LCR -X face (tighter grip)
+xstop_squeeze = 0.4;     // -X stop bites this far past the LCR -X face (0.8→0.4, moved back 0.4 mm for clearance)
 
 /* [Screen window] (display 15..41 x 5.5..22.3); bezel shrinks the cutout 1.5 mm/side */
 scr_x0 = 14.5; scr_x1 = 41.5;
@@ -137,8 +137,8 @@ roof_z1 = roof_z0 + top_th;        // 40.5 top
 face_z  = roof_z0 - fence_h;       // LCR face seats on the bezel fence, 1.0 mm below the panel
 post_h  = face_z - lcr_hi;         // 18.4 LCR rests on the baseplate post at this Z
 
-cb_flange_z0 = face_z + pb_protrude;          // flange bottom = LCR-button contact level (starts at the very bottom)
-cb_flange_z1 = cb_flange_z0 + cb_flange_h;    // counterbore shoulder height
+cb_flange_z0 = roof_z0;                       // flange bottom raised to the panel underside (bottom shaved 0.5 → 0.5 mm gap to the LCR button)
+cb_flange_z1 = cb_flange_z0 + cb_flange_h;    // counterbore shoulder (38.5, unchanged)
 cb_stem_z1   = roof_z1 + cb_stem_out;
 
 usb_cy = lcr_wid / 2;       // width-centred
